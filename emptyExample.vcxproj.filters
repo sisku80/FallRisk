@@ -10,6 +10,9 @@
     <ClCompile Include="..\..\..\addons\ofxKinectCommonBridge\src\ofxKinectCommonBridge.cpp">
       <Filter>addons\ofxKinect4Windows\src</Filter>
     </ClCompile>
+    <ClCompile Include="Car.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -40,6 +43,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxKinectCommonBridge\src\ofxKinectCommonBridge.h">
       <Filter>addons\ofxKinect4Windows\src</Filter>
+    </ClInclude>
+    <ClInclude Include="Car.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxKinectCommonBridge.h"
 
+
 class testApp : public ofBaseApp{
 	public:
 		void setup();
@@ -20,6 +21,7 @@ class testApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
 		ofxKinectCommonBridge kinect;
-		ofShader k4wShader;
-		ofPlanePrimitive plane;
+
+		ofImage headIm;
+		
 };
