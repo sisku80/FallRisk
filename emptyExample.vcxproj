@@ -106,14 +106,14 @@ xcopy /e /i /y "$(ProjectDir)..\..\..\addons\ofxKinectCommonBridge\libs\KinectCo
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\addons\ofxKinectCommonBridge\src\ofxKinectCommonBridge.cpp" />
-    <ClCompile Include="Car.cpp" />
+    <ClCompile Include="src\Car.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\testApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\addons\ofxKinectCommonBridge\libs\KinectCommonBridge\include\KinectCommonBridgeLib.h" />
     <ClInclude Include="..\..\..\addons\ofxKinectCommonBridge\src\ofxKinectCommonBridge.h" />
-    <ClInclude Include="Car.h" />
+    <ClInclude Include="src\Car.h" />
     <ClInclude Include="src\testApp.h" />
   </ItemGroup>
   <ItemGroup>
