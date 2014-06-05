@@ -3,110 +3,141 @@
 //--------------------------------------------------------------
 void testApp::setup(){
 
+	ofSetFrameRate(60);
+
+	// Kinect initialization code
 	kinect.initSensor();
-	//kinect.initIRStream(640, 480);
+
+	// We first set up data streams for the Kinect (color, depth and skeleton tracking)
 	kinect.initColorStream(640, 480, true);
 	kinect.initDepthStream(640, 480, true);
-	kinect.initSkeletonStream(true);
+	kinect.initSkeletonStream(false);
 
-	//simple start
+	// Launch Kinect
 	kinect.start();
-	ofDisableAlphaBlending(); //Kinect alpha channel is default 0;
+
+	box2d.init();
+	box2d.setGravity(1.5f, 10);
+	box2d.createBounds();
+	box2d.setFPS(30.0);
+	box2d.registerGrabbing();
+
+
+	track.setup(box2d.getWorld(),ofGetWidth()/2,2*ofGetHeight()/3,ofGetWidth(),20);
+	/*zancoL.setPhysics(3.0, 0.53, 0.1);
+	zancoL.setup(box2d.getWorld(), 0, 0, 30, 30);
+	zancoR.setPhysics(3.0, 0.53, 0.1);
+	zancoR.setup(box2d.getWorld(), 0, 0, 30, 30);*/
+	/*feet.push_back(ofPtr<ofxBox2dRect>(new ofxBox2dRect));
+	feet.back().get()->setPhysics(3.0, 0.53, 0.1);
+	feet.back().get()->setup(box2d.getWorld(), mouseX, mouseY, w, h);*/
+
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
-	kinect.update();
+
+	kinect.update();	
+
+	box2d.update();	
+
 }
 
 //--------------------------------------------------------------
-void testApp::draw()
-{
-	ofSetColor(255);
-	kinect.draw(0,0);
-	//ofDisableAlphaBlending();
-	//kinect.drawDepth(0, 0,ofGetWidth(),ofGetHeight());
+void testApp::draw(){
 
-	if(kinect.isNewSkeleton())
-	{
+	ofDisableAlphaBlending();
 		ofSetColor(255);
-		for(int i = 0 ; i < kinect.getSkeletons().size(); i++)
+		kinect.draw(0, 0);
+	ofEnableAlphaBlending();
+
+	for(int i=0; i<circles.size(); i++) {
+		ofFill();
+		ofSetHexColor(0xf6c738);
+		circles[i].get()->draw();
+	}
+	
+	for(int i=0; i<boxes.size(); i++) {
+		ofFill();
+		ofSetHexColor(0xBF2545);
+		boxes[i].get()->draw();
+	}
+	ofFill();
+	ofSetColor(40,180,70);
+	track.draw();
+
+	// draw the ground
+	box2d.drawGround();
+	
+	string info = "";
+	info += "Press [c] for circles\n";
+	info += "Press [b] for blocks\n";
+	info += "Total Bodies: "+ofToString(box2d.getBodyCount())+"\n";
+	info += "Total Joints: "+ofToString(box2d.getJointCount())+"\n\n";
+	info += "FPS: "+ofToString(ofGetFrameRate(), 1)+"\n";
+	ofSetColor(255);
+	ofDrawBitmapString(info, 30, 30);
+	
+	if(kinect.getSkeletons().size() > 0)
+	{
+		if(kinect.getSkeletons().at(0).find(NUI_SKELETON_POSITION_HEAD) != kinect.getSkeletons().at(0).end())
 		{
-			if(kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HEAD) != kinect.getSkeletons().at(i).end())
+			SkeletonBone headJoint = kinect.getSkeletons().at(0).find(NUI_SKELETON_POSITION_HEAD)->second;
+			if(kinect.getSkeletons().at(0).find(NUI_SKELETON_POSITION_HAND_LEFT) != kinect.getSkeletons().at(0).end())
 			{
-				SkeletonBone headBone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_HEAD)->second;
-				ofVec2f headScreenPosition(headBone.getScreenPosition().x, headBone.getScreenPosition().y);
-				ofCircle(headScreenPosition.x, headScreenPosition.y, 10);
-				
-
-				//RIGHT SHOULDER
-				ofSetColor(255,0,0); //shoulder color
-				if(kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_SHOULDER_RIGHT) != kinect.getSkeletons().at(i).end())
+				SkeletonBone handLJoint = kinect.getSkeletons().at(0).find(NUI_SKELETON_POSITION_HAND_LEFT)->second;
+				if(kinect.getSkeletons().at(0).find(NUI_SKELETON_POSITION_HAND_RIGHT) != kinect.getSkeletons().at(0).end())
 				{
-					SkeletonBone bone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_SHOULDER_RIGHT)->second;
-					ofVec2f partScreenPosition(bone.getScreenPosition().x, bone.getScreenPosition().y);
-					ofCircle(partScreenPosition.x, partScreenPosition.y, 10);
-					
-					//LEFT SHOULDER
-					if(kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_SHOULDER_LEFT) != kinect.getSkeletons().at(i).end())
+					SkeletonBone handRJoint = kinect.getSkeletons().at(0).find(NUI_SKELETON_POSITION_HAND_RIGHT)->second;
+					if(kinect.getSkeletons().at(0).find(NUI_SKELETON_POSITION_FOOT_LEFT) != kinect.getSkeletons().at(0).end())
 					{
-						SkeletonBone bone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_SHOULDER_LEFT)->second;
-						ofVec2f partScreenPosition(bone.getScreenPosition().x, bone.getScreenPosition().y);
-						ofCircle(partScreenPosition.x, partScreenPosition.y, 10);
-
-						//RIGHT HAND
-						ofSetColor(0,255,0);
-						if(kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_WRIST_RIGHT) != kinect.getSkeletons().at(i).end())
+						SkeletonBone footLJoint = kinect.getSkeletons().at(0).find(NUI_SKELETON_POSITION_FOOT_LEFT)->second;
+						if(kinect.getSkeletons().at(0).find(NUI_SKELETON_POSITION_FOOT_RIGHT) != kinect.getSkeletons().at(0).end())
 						{
-							SkeletonBone bone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_WRIST_RIGHT)->second;
-							ofVec2f partScreenPosition(bone.getScreenPosition().x, bone.getScreenPosition().y);
-							ofCircle(partScreenPosition.x, partScreenPosition.y, 10);
-
-							//LEFT HAND
-							if(kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_WRIST_LEFT) != kinect.getSkeletons().at(i).end())
-							{
-								SkeletonBone bone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_WRIST_LEFT)->second;
-								ofVec2f partScreenPosition(bone.getScreenPosition().x, bone.getScreenPosition().y);
-								ofCircle(partScreenPosition.x, partScreenPosition.y, 10);
-
-								//RIGHT ELBOW
-								ofSetColor(0,0,255);
-								if(kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_ELBOW_RIGHT) != kinect.getSkeletons().at(i).end())
-								{
-									SkeletonBone bone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_ELBOW_RIGHT)->second;
-									ofVec2f partScreenPosition(bone.getScreenPosition().x, bone.getScreenPosition().y);
-									ofCircle(partScreenPosition.x, partScreenPosition.y, 10);
-
-									//LEFT ELBOW
-									if(kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_ELBOW_LEFT) != kinect.getSkeletons().at(i).end())
-									{
-										SkeletonBone bone = kinect.getSkeletons().at(i).find(NUI_SKELETON_POSITION_ELBOW_LEFT)->second;
-										ofVec2f partScreenPosition(bone.getScreenPosition().x, bone.getScreenPosition().y);
-										ofCircle(partScreenPosition.x, partScreenPosition.y, 10);
-
-
-									}
-								}
+							SkeletonBone footRJoint = kinect.getSkeletons().at(0).find(NUI_SKELETON_POSITION_FOOT_RIGHT)->second;
+			
+							if(handLJoint.getScreenPosition().y < headJoint.getScreenPosition().y && handRJoint.getScreenPosition().y < headJoint.getScreenPosition().y){
+								float posX = ((handLJoint.getScreenPosition().x + handRJoint.getScreenPosition().x)/2);
+								float posY = ((handLJoint.getScreenPosition().y+ handRJoint.getScreenPosition().y)/2);
+								float r = ofRandom(4, 20);
+								circles.push_back(ofPtr<ofxBox2dCircle>(new ofxBox2dCircle));
+								circles.back().get()->setPhysics(3.0, 0.53, 0.1);
+								circles.back().get()->setup(box2d.getWorld(), posX, posY, r);
 							}
+							
+							//zancoL.setPosition(footLJoint.getScreenPosition().x,footLJoint.getScreenPosition().y);
+							//zancoR.setPosition(footRJoint.getScreenPosition().x,footRJoint.getScreenPosition().y);
+								
 						}
 					}
 				}
-				return;
 			}
 		}
 	}
-	
-	/*
-	if(kinect.getSkeletons().at(0).find(NUI_SKELETON_POSITION_HEAD) != kinect.getSkeletons().at(0).end()){
-		kinect.getSkeletons().at(0).find(NUI_SKELETON_POSITION_HEAD)->second;
-		SkeletonBone headJoint = kinect.getSkeletons().at(0).find(NUI_SKELETON_POSITION_HEAD)->second;
-		ofCircle(headJoint.getScreenPosition().x, headJoint.getScreenPosition().y, 10);
-	}*/
-	
+
+
 }
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
+
+	if(key == 'c') {
+		float r = ofRandom(4, 20);
+		circles.push_back(ofPtr<ofxBox2dCircle>(new ofxBox2dCircle));
+		circles.back().get()->setPhysics(3.0, 0.53, 0.1);
+		circles.back().get()->setup(box2d.getWorld(), mouseX, mouseY, r);
+		
+	}
+	
+	if(key == 'b') {
+		float w = ofRandom(4, 20);
+		float h = ofRandom(4, 20);
+		boxes.push_back(ofPtr<ofxBox2dRect>(new ofxBox2dRect));
+		boxes.back().get()->setPhysics(3.0, 0.53, 0.1);
+		boxes.back().get()->setup(box2d.getWorld(), mouseX, mouseY, w, h);
+	}
+	
+	if(key == 't') ofToggleFullscreen();
 
 }
 
@@ -116,7 +147,7 @@ void testApp::keyReleased(int key){
 }
 
 //--------------------------------------------------------------
-void testApp::mouseMoved(int x, int y){
+void testApp::mouseMoved(int x, int y ){
 
 }
 
