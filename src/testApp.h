@@ -4,7 +4,11 @@
 
 #include "ofxKinectCommonBridge.h"
 #include "ofxBox2d.h"
-//#include "Vehicle.h"
+#include "Vehicle.h"
+#include "TrackPart.h"
+
+#define M_PI 3.1416
+
 
 class testApp : public ofBaseApp{
 
@@ -27,8 +31,27 @@ class testApp : public ofBaseApp{
 		ofxBox2d                            box2d;			  //	the box2d world
 		vector    <ofPtr<ofxBox2dCircle> >	circles;		  //	default box2d circles
 		vector	  <ofPtr<ofxBox2dRect> >	boxes;			  //	defalut box2d rects
-		ofxBox2dRect track;
-		//Vehicle coche;
 
+		int score;
+		bool started;
+		int level;
+		ofImage ambientCanyon;
+		ofSoundPlayer mines;
+		ofSoundPlayer  explosion;
+		ofSoundPlayer  splash;
+
+		void generateLevel();
+		void resetTrains();
+		bool allTrainsDone();
+
+		vector    <ofPtr<Vehicle> > vehicles;				  //	default FallRisk vehicles
+		vector	  <ofPtr<TrackPart> > tracks;				  //	default FallRisk tracks
+
+		Vehicle train;
+
+		ofxBox2dRect LHumerusTrack;
+		ofxBox2dRect RHumerusTrack;
+		ofxBox2dRect LRadiusTrack;
+		ofxBox2dRect RRadiusTrack;
 		
 };
