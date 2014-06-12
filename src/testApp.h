@@ -47,8 +47,7 @@ class testApp : public ofBaseApp{
 		vector    <ofPtr<Vehicle> > vehicles;				  //	default FallRisk vehicles
 		vector	  <ofPtr<TrackPart> > tracks;				  //	default FallRisk tracks
 
-		Vehicle train;
-
+		//Arms pieces
 		ofxBox2dRect LHumerusTrack;
 		ofxBox2dRect RHumerusTrack;
 		ofxBox2dRect LRadiusTrack;

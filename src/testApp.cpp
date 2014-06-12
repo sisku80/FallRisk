@@ -40,10 +40,6 @@ void testApp::setup(){
 	mines.setLoop(true);
 	mines.play();
 
-	//Train PART
-	//train.setPhysics(3.0, 0.0, 0.01);
-	//train.setup(box2d.getWorld(), 10, 230 , 30, 30);
-
 	score = 0;
 	level = 1;
 	started = false;
@@ -68,21 +64,6 @@ void testApp::update(){
 
 	if(started != false){
 		
-		//if the game started...
-		//train.update();
-		//train.sound();
-		/*if(train.getPosition().x > ofGetWidth()-20){
-			train.setPosition(20,230);
-			level++;
-			started = false;
-			generateLevel();
-		}
-		if(train.getPosition().y > ofGetHeight()-50){
-			splash.play();
-			train.setPosition(20,230);
-			started = false;
-		}*/
-
 		//SE ACTUALIZAN LOS VEHICULOS
 		for(int i=0; i< vehicles.size(); i++) {
 			vehicles[i].get()->update();
@@ -324,6 +305,8 @@ void testApp::keyPressed(int key){
 		boxes.back().get()->setPhysics(3.0, 0.53, 0.1);
 		boxes.back().get()->setup(box2d.getWorld(), mouseX, mouseY, w, h);
 	}
+
+	//Si pulsamos V ahora tambien aparecen trenes!
 	if(key == 'v') {
 		vehicles.push_back(ofPtr<Vehicle>(new Vehicle));
 		vehicles.back().get()->setPhysics(3.0, 0.0, 0.1);
@@ -335,6 +318,8 @@ void testApp::keyPressed(int key){
 
 }
 
+
+//Funcion para generar los niveles automaticamente
 void testApp::generateLevel(){
 	
 	if(tracks.size() > 0){
@@ -355,7 +340,7 @@ void testApp::generateLevel(){
 		if(t != 4){
 			float w = ofRandom(30, 85);
 			float h = 10;
-			float r = ofRandom(-40,40);
+			float r = ofRandom(-30,30);
 			int instab = ofRandom(0,70);
 			tracks.push_back(ofPtr<TrackPart>(new TrackPart));
 			tracks.back().get()->setup(box2d.getWorld(), 40+80*t,  250+instab, w, h);
@@ -371,12 +356,14 @@ void testApp::generateLevel(){
 	tracks.back().get()->setRotation(0);
 }
 
-
+//Reset del vector de vehiculos a la posicion inicial
 void testApp::resetTrains(){
 	for(int i = 0 ; i < vehicles.size() ; i++){
 		vehicles[i].get()->setPosition(20,220);
 	}
 }
+
+//Comprueba si todos los trenes del nivel han pasado al otro lado
 bool testApp::allTrainsDone(){
 	bool flag = true;
 	for(int i = 0 ; i < vehicles.size() ; i++){

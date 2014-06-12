@@ -14,7 +14,7 @@ class Vehicle : public ofxBox2dRect
 		Vehicle();
 		~Vehicle();
 
-		void update();//float deltaTime);
+		void update();
 		void draw();
 		void sound();
 
